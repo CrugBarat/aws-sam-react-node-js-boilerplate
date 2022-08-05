@@ -89,7 +89,6 @@ The following yarn scripts can be run from the root of the project:
 
 |  Script   |                             Description                              |
 | :----------- | :------------------------------------------------------------------ |
-|`yarn version-bump` | runs a [script](./tools/version-bump) which helps automate version bumps across all packages |
 |`yarn build` | build the frontend package |
 |`yarn test:ci` | runs tests with coverage across all packages |
 |`yarn lint:fix` | runs the linter to correct errors, bugs and stylistic errors |
