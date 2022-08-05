@@ -5,7 +5,7 @@
 STACK_NAME=$1
 REGION=eu-west-2
 USER_POOL_ID=$(aws cloudformation list-exports --query "Exports[?Name==\`${STACK_NAME}-user-pool-id\`].Value" --no-paginate --output text)
-USERNAME=admin@and.digital
+USERNAME=admin@example.com
 PASSWORD=Password1!
 
 aws cognito-idp admin-create-user --user-pool-id $USER_POOL_ID --username $USERNAME --output table --no-cli-pager
