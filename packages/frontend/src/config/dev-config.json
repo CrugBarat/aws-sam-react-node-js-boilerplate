@@ -1,0 +1,6 @@
+{
+  "USER_POOL_ID": "dev",
+  "USER_POOL_CLIENT_ID": "dev",
+  "CLOUDFRONT_DOMAIN_NAME": "localhost:5555",
+  "REGION": "dev"
+}

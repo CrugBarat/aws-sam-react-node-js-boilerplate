@@ -1,0 +1,37 @@
+{
+  "name": "sam-react-node-boilerplate-root",
+  "version": "0.0.1",
+  "author": "Craig Barratt | Product Developer AND Techno Technician | Club Almeida - Squad Halo",
+  "description": "SAM React Node Boilerplate Root",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "postinstall": "yarn --cwd ./packages/api install",
+    "git-tag": "chmod +x ./scripts/git-tag.sh && ./scripts/git-tag.sh",
+    "build": "NODE_ENV=production yarn --cwd=./packages/frontend run build",
+    "test:ci": "NODE_ENV=test yarn workspaces run test:ci && yarn --cwd ./packages/api run test --coverage --watchAll=false",
+    "lint:fix": "yarn workspaces run lint:fix && yarn --cwd ./packages/api run lint:fix",
+    "start:frontend": "yarn install && yarn --cwd ./packages/frontend run start",
+    "start:api-local": "yarn --cwd ./packages/api run start-dev",
+    "start:api-gateway-local": "sam local start-api",
+    "start:dev-stack-local": "concurrently --kill-others \"yarn start:frontend\" \"yarn start:api-local\"",
+    "drop-local-ddb-tables": "yarn --cwd ./packages/api run drop-local-tables",
+    "start:fire": "echo 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "concurrently": "^6.2.0",
+    "husky": "^4.3.0"
+  },
+  "workspaces": [
+    "packages/frontend",
+    "packages/sam"
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint:fix",
+      "pre-push": "yarn test:ci",
+      "post-merge": "yarn git-tag"
+    }
+  }
+}

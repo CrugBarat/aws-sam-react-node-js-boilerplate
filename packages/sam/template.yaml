@@ -1,0 +1,72 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  SAM React Node Boilerplate
+
+Globals:
+  Api:
+    EndpointConfiguration: REGIONAL
+    Cors: "'*'"
+
+Parameters:
+  UserPoolName:
+    Type: String
+    Default: sam-react-node-boilerplate-user-pool
+  BucketName:
+    Type: String
+    Default: sam-react-node-boilerplate-s3-site-bucket
+  APIGatewayName:
+    Type: String
+    Default: sam-react-node-boilerplate-api-gateway
+  DDBEndpoint:
+    Type: String
+    Default: https://dynamodb.eu-west-2.amazonaws.com
+  ExamplesTableName:
+    Type: String
+    Default: sam-react-node-boilerplate-example-table-dev
+  EnvironmentName:
+    Type: String
+    Default: dev
+
+Resources:
+  Distribution:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: ./templates/distribution-template.yaml
+      Parameters:
+        AWSStackName: !Sub ${AWS::StackName}
+        BucketName: !Ref BucketName
+        EnvironmentName: !Ref EnvironmentName
+        APIGateway:
+          Fn::GetAtt:
+            - API
+            - Outputs.APIGateway
+
+  Auth:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: ./templates/auth-template.yaml
+      Parameters:
+        AWSStackName: !Sub ${AWS::StackName}
+        UserPoolName: !Ref UserPoolName
+
+  API:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: ./templates/api-template.yaml
+      Parameters:
+        AWSStackName: !Sub ${AWS::StackName}
+        APIGatewayName: !Ref APIGatewayName
+        DDBEndpoint: !Ref DDBEndpoint
+        EnvironmentName: !Ref EnvironmentName
+        UserPoolArnParam:
+          Fn::GetAtt:
+            - Auth
+            - Outputs.UserPoolArnParam
+
+  DB:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: ./templates/dynamo-template.yaml
+      Parameters:
+        ExamplesTableName: !Ref ExamplesTableName

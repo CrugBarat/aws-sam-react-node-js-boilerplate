@@ -1,0 +1,6 @@
+{
+  "setupFiles": ["<rootDir>/src/tests/setupTests.js"],
+  "testRegex": "/*.test.jsx$",
+  "collectCoverage": true,
+  "moduleDirectories": ["node_modules", "src"]
+}

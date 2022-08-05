@@ -1,0 +1,52 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "extends": [
+    "plugin:react/recommended", 
+    "plugin:jsx-a11y/recommended",
+    "plugin:jest/recommended",
+    "plugin:jest-formatting/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "settings": {
+    "react": {
+      "pragma": "React",
+      "version": "detect"
+    }
+  },
+  "plugins": ["react", "react-hooks", "jest", "jest-formatting"],
+  "globals": {
+    "MyGlobal": true
+  },
+  "rules": {
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "error",
+    "react/prop-types": 0,
+    "react/react-in-jsx-scope": 0,
+    "no-use-before-define": [0],
+    "jest/consistent-test-it": ["error", { "fn": "it" }],
+    "jest-formatting/padding-around-describe-blocks": 2,
+    "jest-formatting/padding-around-before-all-blocks": 2,
+    "jest/expect-expect": ["off"],
+    "no-var": "warn",
+    "curly": "error",
+    "eqeqeq": ["error", "always"],
+    "prefer-const": "warn",
+    "prettier/prettier": [
+      "error",
+      {
+        "printWidth": 80,
+        "singleQuote": true,
+        "semi": true,
+        "tabWidth": 2,
+        "trailingComma": "all"
+      }
+    ],
+    "semi": ["error", "always"]
+  }
+}

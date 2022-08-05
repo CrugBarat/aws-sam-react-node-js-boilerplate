@@ -1,0 +1,152 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+  APIGatewayName:
+    Type: String
+  AWSStackName:
+    Type: String
+  UserPoolArnParam:
+    Type: String
+  DDBEndpoint:
+    Type: String
+  EnvironmentName:
+    Type: String
+
+Resources:
+  Lambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: lambda.handler
+      Runtime: nodejs14.x
+      CodeUri: ../../api/
+      Timeout: 10
+      Policies:
+        - Statement:
+            - Sid: AllowDynamoDbAccess
+              Effect: Allow
+              Action:
+                - dynamodb:*
+              Resource: '*'
+      Environment:
+        Variables:
+          DDB_ENDPOINT: !Ref DDBEndpoint
+          ENVIRONMENT: !Ref EnvironmentName
+      Events:
+        GetExamples:
+          Type: Api
+          Properties:
+            Path: /api/examples
+            Method: get
+            RestApiId:
+              Ref: APIGateway
+        SaveExample:
+          Type: Api
+          Properties:
+            Path: /api/examples
+            Method: post
+            RestApiId:
+              Ref: APIGateway
+        DeleteExample:
+          Type: Api
+          Properties:
+            Path: /api/examples/{id}
+            Method: delete
+            RestApiId:
+              Ref: APIGateway
+          RequestParameters:
+            - method.request.path.id:
+                Required: true
+
+  APIGateway:
+    Type: AWS::Serverless::Api
+    DependsOn: Lambda
+    Properties:
+      StageName: prod
+      Cors:
+        AllowMethods: "'GET,OPTIONS,POST'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'*'"
+      Auth:
+        Authorizers:
+          CognitoAuthorizer:
+            UserPoolArn: !Ref UserPoolArnParam
+      DefinitionBody:
+        swagger: 2.0
+        info:
+          version: '1.0'
+          title: !Ref APIGatewayName
+        basePath: /prod
+        schemes:
+          - 'https'
+        securityDefinitions:
+          CognitoAuthorizer:
+            type: 'apiKey'
+            name: 'Authorization'
+            in: 'header'
+            x-amazon-apigateway-authtype: 'cognito_user_pools'
+        paths:
+          /api/examples:
+            get:
+              responses:
+                '200':
+                  description: Success
+                '401':
+                  description: Unauthorized
+              # Needed to secure endpoint - if/when needed:
+              # security:
+              #   - CognitoAuthorizer: []
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${Lambda.Arn}/invocations
+                passthroughBehavior: 'when_no_match'
+                httpMethod: 'POST'
+                type: 'aws_proxy'
+            post:
+              responses:
+                '200':
+                  description: Success
+                '401':
+                  description: Unauthorized
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${Lambda.Arn}/invocations
+                passthroughBehavior: 'when_no_match'
+                httpMethod: 'POST'
+                type: 'aws_proxy'
+          /api/examples/{id}:
+            delete:
+              parameters:
+                - name: 'id'
+                  in: 'path'
+                  required: true
+                  type: 'string'
+              responses:
+                '200':
+                  description: Success
+                '401':
+                  description: Unauthorized
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${Lambda.Arn}/invocations
+                requestParameters:
+                  integration.request.path.id: 'method.request.path.id'
+                passthroughBehavior: 'when_no_match'
+                httpMethod: 'POST'
+                type: 'aws_proxy'
+          
+Outputs:
+  ApiGatewayUrl:
+    Description: 'API Gateway URL'
+    Value:
+      Fn::Join:
+        - ''
+        - - Ref: APIGateway
+          - '.execute-api.eu-west-2.amazonaws.com/prod'
+    Export:
+      Name: !Sub '${AWSStackName}-api-gateway-url'
+
+  APIGateway:
+    Description: 'API Gateway'
+    Value:
+      Ref: APIGateway
