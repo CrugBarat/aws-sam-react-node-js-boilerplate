@@ -6,10 +6,6 @@
 2. [Navigation](#Navigation)
 3. [Setup](#Setup)
 4. [Scripts](#Scripts)
-5. [Git](#Git)
-6. [Git Hooks](#Hooks)
-7. [CI/CD](#CI/CD)
-8. [Anything Else](#Anything-Else)
 
 
 ## Project Structure
