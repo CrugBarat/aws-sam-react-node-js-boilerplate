@@ -1,4 +1,4 @@
-# AND Digital AWS SAM React Node Boilerplate
+# AWS SAM React Node Boilerplate
 
 ### Contents
 
