@@ -3,9 +3,10 @@
 [ -z "$1" ] && echo "Please supply an AWS CloudFormation stack name as a parameter" && exit 1
 
 STACK_NAME=$1
-USER_POOL_ID=$(aws cloudformation list-exports --query "Exports[?Name==\`${STACK_NAME}-user-pool-id\`].Value" --no-paginate --output text)
-USER_POOL_CLIENT_ID=$(aws cloudformation list-exports --query "Exports[?Name==\`${STACK_NAME}-user-pool-client-id\`].Value" --no-paginate --output text)
-CLOUDFRONT_DOMAIN_NAME=$(aws cloudformation list-exports --query "Exports[?Name==\`${STACK_NAME}-cloudfront-domain-name\`].Value" --no-paginate --output text)
+REGION="eu-west-2"
+USER_POOL_ID=$(aws cloudformation list-exports --query "Exports[?Name==\`${STACK_NAME}-user-pool-id\`].Value" --no-paginate --output text --region ${REGION})
+USER_POOL_CLIENT_ID=$(aws cloudformation list-exports --query "Exports[?Name==\`${STACK_NAME}-user-pool-client-id\`].Value" --no-paginate --output text --region ${REGION})
+CLOUDFRONT_DOMAIN_NAME=$(aws cloudformation list-exports --query "Exports[?Name==\`${STACK_NAME}-cloudfront-domain-name\`].Value" --no-paginate --output text --region ${REGION})
 REGION="eu-west-2"
 
 echo "USER_POOL_ID:$USER_POOL_ID|USER_POOL_CLIENT_ID:${USER_POOL_CLIENT_ID}|CLOUDFRONT_DOMAIN_NAME:${CLOUDFRONT_DOMAIN_NAME}|REGION:${REGION}" |

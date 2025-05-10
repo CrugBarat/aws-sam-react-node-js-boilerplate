@@ -4,12 +4,12 @@
 
 STACK_NAME=$1
 REGION=eu-west-2
-USER_POOL_ID=$(aws cloudformation list-exports --query "Exports[?Name==\`${STACK_NAME}-user-pool-id\`].Value" --no-paginate --output text)
+USER_POOL_ID=$(aws cloudformation list-exports --query "Exports[?Name==\`${STACK_NAME}-user-pool-id\`].Value" --no-paginate --output text --region ${REGION})
 USERNAME=admin@example.com
 PASSWORD=Password1!
 
-aws cognito-idp admin-create-user --user-pool-id $USER_POOL_ID --username $USERNAME --output table --no-cli-pager
-aws cognito-idp admin-set-user-password --user-pool-id $USER_POOL_ID --username $USERNAME --password $PASSWORD --permanent --output table --no-cli-pager
+aws cognito-idp admin-create-user --user-pool-id $USER_POOL_ID --username $USERNAME --output table --no-cli-pager --region ${REGION}
+aws cognito-idp admin-set-user-password --user-pool-id $USER_POOL_ID --username $USERNAME --password $PASSWORD --permanent --output table --no-cli-pager --region ${REGION}
 
 if [[ -z $USER_POOL_ID ]]; then
   echo 'User Pool ID not found - please check that your stack has deployed successfully :('

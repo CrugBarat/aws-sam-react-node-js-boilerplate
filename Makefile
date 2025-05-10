@@ -8,8 +8,8 @@ USER_POOL=${PROJECT}-user-pool-$(ENV)
 DDB_ENDPOINT?=https://dynamodb.eu-west-2.amazonaws.com
 EXAMPLES_TABLE_NAME=${PROJECT}-example-table-$(ENV)
 REGION=eu-west-2
-USER_POOL_ID=$(shell aws cloudformation list-exports --query "Exports[?Name==\`${STACK_NAME}-user-pool-id\`].Value" --no-paginate --output text)
-CLOUDFRONT_DOMAIN_NAME=$(shell aws cloudformation list-exports --query "Exports[?Name==\`${STACK_NAME}-cloudfront-domain-name\`].Value" --no-paginate --output text)
+USER_POOL_ID=$(shell aws cloudformation list-exports --query "Exports[?Name==\`${STACK_NAME}-user-pool-id\`].Value" --no-paginate --output text --region ${REGION})
+CLOUDFRONT_DOMAIN_NAME=$(shell aws cloudformation list-exports --query "Exports[?Name==\`${STACK_NAME}-cloudfront-domain-name\`].Value" --no-paginate --output text --region ${REGION})
 
 .PHONY: build
 
