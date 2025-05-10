@@ -18,7 +18,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: lambda.handler
-      Runtime: nodejs14.x
+      Runtime: nodejs18.x
       CodeUri: ../../api/
       Timeout: 10
       Policies:
